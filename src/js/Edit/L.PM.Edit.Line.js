@@ -559,7 +559,7 @@ Edit.Line = Edit.extend({
 
     // if self intersection is not allowed but this edit caused a self intersection,
     // reset and cancel; do not fire events
-    if (!this.options.allowSelfIntersection && this.hasSelfIntersection()) {
+    if (!this.options.allowSelfIntersection && this.hasSelfIntersection() && !this.previouslyHadSelfIntersection) {
       // reset coordinates
       this._layer.setLatLngs(this._coordsBeforeEdit);
       this._coordsBeforeEdit = null;
@@ -583,6 +583,7 @@ Edit.Line = Edit.extend({
   _onMarkerDragStart(e) {
     const marker = e.target;
     const { indexPath } = this.findDeepMarkerIndex(this._markers, marker);
+    this.previouslyHadSelfIntersection = this.hasSelfIntersection();
 
     this._layer.fire('pm:markerdragstart', {
       markerEvent: e,
